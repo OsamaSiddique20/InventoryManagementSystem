@@ -15,17 +15,21 @@ class HolderListResource(Resource):
 
     def post(self):
         data = request.get_json()
-
+        for i in data:
+            print(data.get(i))
+            if data.get(i) == '':
+                return {'Message':'Please fill all fields'},HTTPStatus.NOT_FOUND    
         holder = Holder(
             name=data['name'],
             type=data['type'],
             start_date=data['start_date'],
-            end_date=data.get('end_date'),  # Assuming 'end_date' is an optional field
-            location=data.get('location')  # Assuming 'location' is an optional field
+            end_date=data.get('end_date'), 
+            location=data.get('location')  
         )
         holder.save()
 
         return holder.data, HTTPStatus.CREATED
+    
  
 class HolderResourse(Resource):
     def get(self, holder_id):
@@ -51,4 +55,4 @@ class HolderResourse(Resource):
         if 'data' in result:
             return result['data'], HTTPStatus.OK
         else:
-            return {'message': 'Holder not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'Holder cannot be deleted because it has an item in possession'}, HTTPStatus.NOT_FOUND

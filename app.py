@@ -28,7 +28,6 @@ def register_extensions(app):
 
 def register_resources(app):
     api = Api(app)
-
     api.add_resource(CategoryListResourse, '/category')
     api.add_resource(CategoryResourse, '/category/<int:cat_id>')
     api.add_resource(ItemListResource, '/item')

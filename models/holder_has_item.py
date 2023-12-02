@@ -41,10 +41,10 @@ class HolderHasItem(db.Model):
 
         return result
     
-    @classmethod
-    def get_id_by_id(cls, cat_id):
-        print(cat_id)
-        return cls.query.filter_by(cat_id=cat_id).first().cat_id
+    # @classmethod
+    # def get_id_by_id(cls, cat_id):
+    #     print(cat_id)
+    #     return cls.query.filter_by(cat_id=cat_id).first().cat_id
     
 
     @classmethod

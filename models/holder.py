@@ -4,7 +4,6 @@ from datetime import datetime
 
 from http import HTTPStatus
 
-
 class Holder(db.Model):
     __tablename__ = 'holder'
 
@@ -26,6 +25,7 @@ class Holder(db.Model):
             'end_date': str(self.end_date) if self.end_date else None,
             'location': self.location,
         }
+    
 
     @classmethod
     def update(cls, holder_id, data):
@@ -39,13 +39,21 @@ class Holder(db.Model):
             holder.location = data.get('location', holder.location)
 
             db.session.commit()
-
             return holder.data 
         else:
             return None
 
     @classmethod
     def delete(cls, holder_id):
+        from models.holder_has_item import HolderHasItem
+        x = HolderHasItem.get_all()
+        for i in x:
+            
+            if i['holder_holder_id'] == holder_id:
+
+                return {'message': 'Holder cannot be deleted '}
+
+
         holder = cls.query.get(holder_id)
 
         if holder is None:
@@ -54,16 +62,22 @@ class Holder(db.Model):
         db.session.delete(holder)
         db.session.commit()
 
-        updated_holders = cls.get_all()  # Assuming you have a get_all method to fetch all holders
+        updated_holders = cls.get_all()  
 
         return {'data': updated_holders}
     
+
+    @classmethod
+    def get_id_by_id(cls, holder_id):
+        print(holder_id)
+        return cls.query.get(holder_id)
+    
+
     @classmethod
     def get_all(cls):
         r = cls.query.all()
 
         result = []
-
         for i in r:
             result.append(i.data)
 

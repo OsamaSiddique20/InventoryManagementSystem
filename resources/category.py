@@ -18,7 +18,9 @@ class CategoryListResourse(Resource):
 
     def post(self):
         data = request.get_json()
-
+        for i in data:
+            if data.get(i) == '':
+                return {'Message':'Please fill all fields'},HTTPStatus.NOT_FOUND
         category = Category(cat_name=data['cat_name'],
                     cat_desc=data['cat_desc'])
         category.save()

@@ -14,7 +14,7 @@ class Item(db.Model):
     description = db.Column(db.String(225), nullable=False)
     category_cat_id = db.Column(db.Integer, db.ForeignKey('Category.cat_id'), nullable=False)
 
-    associated_holders = db.relationship('Holder', secondary='holder_has_item', backref='items')
+    associated_holders = db.relationship('Holder', secondary='holder_has_item', backref='items', overlaps="associated_items,items")
   
 
     @property
@@ -24,7 +24,6 @@ class Item(db.Model):
             'name': self.name,
             'description': self.description,
             'category_cat_id': self.category_cat_id,
-    
         }
     
     # Save the record
@@ -44,9 +43,9 @@ class Item(db.Model):
         return result
     
     @classmethod
-    def get_id_by_id(cls, item_details_id):
-     
-        return cls.query.filter_by(item_id=item_details_id).first().item_id
+    def get_id_by_id(cls, item_id):
+        print(item_id)
+        return cls.query.get(item_id)
 
 
     @classmethod
@@ -71,15 +70,24 @@ class Item(db.Model):
 
     @classmethod
     def delete(cls, item_id):
-        item = cls.query.get(item_id)
+        from models.holder_has_item import HolderHasItem
+        x = HolderHasItem.get_all()
+        for i in x:
+            
+            if i['item_item_id'] == item_id:
 
-        if item is None:
-            return {'message': 'Item not found'}, HTTPStatus.NOT_FOUND
+                return {'message': 'Item cannot be deleted '}
 
-        db.session.delete(item)
+
+        Item = cls.query.get(item_id)
+
+        if Item is None:
+            return {'message': 'Item not found'}
+
+        db.session.delete(Item)
         db.session.commit()
 
-        updated_items = cls.get_all()  # Assuming you have a get_all method to fetch all items
+        updated_holders = cls.get_all()  
 
-        return {'data': updated_items}, HTTPStatus.OK
+        return {'data': updated_holders}
     

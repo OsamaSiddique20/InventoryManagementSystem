@@ -3,6 +3,8 @@ from flask_restful import Resource
 from http import HTTPStatus
 
 from models.holder_has_item import HolderHasItem
+from models.holder import Holder
+from models.item import Item
 
 class HolderHasItemListResource(Resource):
     def get(self):
@@ -15,12 +17,22 @@ class HolderHasItemListResource(Resource):
 
     def post(self):
         data = request.get_json()
+        for i in data:
+            print(data.get(i))
+            if data.get(i) == '':
+                return {'Message':'Please fill all fields'},HTTPStatus.NOT_FOUND
+        x = Holder.get_id_by_id(data['holder_holder_id'])
+        y = Item.get_id_by_id(data['item_item_id'])
+        if x == None:
+            return {"message":'Holder_id doesnt exist'}
+        if y == None:
+            return {"message":'Item_id doesnt exist '}
 
         holder_has_item = HolderHasItem(
             holder_holder_id=data['holder_holder_id'],
             item_item_id=data['item_item_id'],
-            quantity=data.get('quantity'),  # Assuming 'quantity' is an optional field
-            serial_num=data.get('serial_num')  # Assuming 'serial_num' is an optional field
+            quantity=data.get('quantity'),  
+            serial_num=data.get('serial_num')  
         )
         holder_has_item.save()
 
@@ -45,9 +57,4 @@ class HolderHasItemResource(Resource):
             return {'message': 'Holder Has Item not found'}, HTTPStatus.NOT_FOUND
 
     def delete(self, holder_holder_id, item_item_id):
-        result = HolderHasItem.delete(holder_holder_id, item_item_id)
-
-        if 'data' in result:
-            return result['data'], HTTPStatus.OK
-        else:
-            return {'message': 'Holder Has Item not found'}, HTTPStatus.NOT_FOUND
+        return {'Message':'You do not have permission to delete '}

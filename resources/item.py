@@ -15,7 +15,10 @@ class ItemListResource(Resource):
 
     def post(self):
         data = request.get_json()
-
+        for i in data:
+           
+            if data.get(i) == '':
+                return {'Message':'Please fill all fields'},HTTPStatus.NOT_FOUND
         item = Item(
             name=data['name'],
             description=data['description'],
@@ -49,4 +52,5 @@ class ItemResource(Resource):
         if 'data' in result:
             return result['data'], HTTPStatus.OK
         else:
-            return {'message': 'Item not found'}, HTTPStatus.NOT_FOUND
+            return {'message': 'Item cannot be deleted because a holder pocesses it'}, HTTPStatus.NOT_FOUND
+
