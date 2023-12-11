@@ -2,15 +2,12 @@ import sys
 from flask import Flask
 from flask_migrate import Migrate
 from flask_restful import Api
-
 from config import Config
 from extensions import db
-
 from resources.category import CategoryListResourse, CategoryResourse
 from resources.item import ItemListResource, ItemResource
 from resources.holder_has_item import HolderHasItemListResource, HolderHasItemResource
 from resources.holder import HolderListResource, HolderResourse
-
 
 def create_app():
     print("Hello", file=sys.stderr)
